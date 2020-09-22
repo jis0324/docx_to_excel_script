@@ -1,0 +1,3 @@
+comtypes
+PyPDF2
+openpyxl
