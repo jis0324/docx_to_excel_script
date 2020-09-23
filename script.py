@@ -81,6 +81,9 @@ def get_lesson_data(content):
 
     newline_pos_list = list()
     content = re.sub(r'\s+', ' ', content).strip()
+    split_patterns = re.findall(r'\d+', content)
+    if split_patterns:
+      content = content.rsplit(split_patterns[-1], 1)[0].strip()
     row_num_pattern = re.compile(r'\.\s+\d+\.\s')
     for row in row_num_pattern.finditer(content):
       newline_pos_list.append(row.start())
@@ -93,7 +96,7 @@ def get_lesson_data(content):
         if len(newline_pos_list) > index:
           temp_list.append(content[newline_pos_list[index-1]:newline_pos_list[index]])
         else:
-          temp_list.append(content[newline_pos_list[index-1]:len(content)-10])
+          temp_list.append(content[newline_pos_list[index-1]:])
 
     return_dict['task_analysis'] = "\n".join(temp_list)
 
@@ -187,7 +190,7 @@ def main():
     
   # printing number of pages in pdf file 
   for page in range(pdfReader.numPages):
-    print("Converting {} page in Total {}".format(page + 1, pdfReader.numPages))
+    print("Converting {} page in Total {} pages...".format(page + 1, pdfReader.numPages))
 
     # creating a page object 
     pageObj = pdfReader.getPage(page)
@@ -203,7 +206,7 @@ def main():
         insert_to_xlsx(lesson_dict)
   
   # formating result xlsx
-  format_xlsx()
+  # format_xlsx()
 
   # closing the pdf file object 
   pdfFileObj.close()
